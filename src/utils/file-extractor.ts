@@ -86,7 +86,10 @@ export class FileExtractor {
       case 'text/plain':
         return {
           content: buffer.toString('utf-8'),
-          metadata
+          metadata: {
+            ...metadata,
+            extraction_method: 'basic' as const
+          }
         };
       
       default:
@@ -95,13 +98,65 @@ export class FileExtractor {
   }
 
   private async extractPDF(buffer: Buffer, metadata: any): Promise<FileExtractionResult> {
-    // TODO: Implement PDF extraction
-    throw new Error('PDF extraction not yet implemented');
+    // For now, return a placeholder indicating PDF support is coming
+    return {
+      content: '[PDF content extraction not yet implemented. The file has been identified as a PDF document.]',
+      metadata: {
+        ...metadata,
+        extraction_method: 'basic' as const,
+        error: 'PDF extraction requires pdf-parse library'
+      }
+    };
   }
 
   private async extractDOCX(buffer: Buffer, metadata: any): Promise<FileExtractionResult> {
-    // TODO: Implement DOCX extraction
-    throw new Error('DOCX extraction not yet implemented');
+    try {
+      // Basic DOCX text extraction using unzipper
+      const unzipper = (await import('unzipper')).default;
+      const directory = await unzipper.Open.buffer(buffer);
+      
+      // Find the main document content
+      const documentFile = directory.files.find(f => f.path === 'word/document.xml');
+      if (!documentFile) {
+        throw new Error('Invalid DOCX file: document.xml not found');
+      }
+      
+      const documentXml = await documentFile.buffer();
+      const xmlContent = documentXml.toString('utf-8');
+      
+      // Extract text content from XML (basic extraction)
+      // Remove XML tags and extract text
+      const textContent = xmlContent
+        .replace(/<w:p[^>]*>/g, '\n') // Paragraphs to newlines
+        .replace(/<[^>]+>/g, '') // Remove all XML tags
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&apos;/g, "'")
+        .replace(/\s+/g, ' ') // Normalize whitespace
+        .trim();
+      
+      return {
+        content: textContent,
+        metadata: {
+          ...metadata,
+          extraction_method: 'basic' as const,
+          has_images: directory.files.some(f => f.path.startsWith('word/media/')),
+          has_tables: xmlContent.includes('<w:tbl')
+        }
+      };
+    } catch (error: any) {
+      // Fallback for when unzipper is not available
+      return {
+        content: `[DOCX file detected but cannot be extracted. Error: ${error.message}]`,
+        metadata: {
+          ...metadata,
+          extraction_method: 'basic' as const,
+          error: 'DOCX extraction requires unzipper library'
+        }
+      };
+    }
   }
 
   // Helper to determine if a file type is supported

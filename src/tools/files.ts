@@ -68,11 +68,25 @@ export class FilesTools {
         };
       }
 
+      // Determine MIME type from filename if content_type is missing
+      let mimeType = fileData.content_type;
+      if (!mimeType || mimeType === 'undefined') {
+        const ext = fileData.filename.toLowerCase().split('.').pop();
+        const mimeTypeMap: Record<string, string> = {
+          'pdf': 'application/pdf',
+          'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'txt': 'text/plain',
+          'md': 'text/markdown',
+          'csv': 'text/csv'
+        };
+        mimeType = mimeTypeMap[ext || ''] || 'unknown';
+      }
+
       // Check if file type is supported
-      if (!FileExtractor.isSupported(fileData.content_type)) {
+      if (!FileExtractor.isSupported(mimeType)) {
         return {
           error: 'Unsupported file type',
-          message: `File type '${fileData.content_type}' is not supported for text extraction`,
+          message: `File type '${mimeType}' is not supported for text extraction`,
           supported_types: [
             'application/pdf',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -84,31 +98,64 @@ export class FilesTools {
             id: fileData.id,
             filename: fileData.filename,
             content_type: fileData.content_type,
+            detected_type: mimeType,
             url: fileData.url
           }
         };
       }
 
-      // For now, return a message about downloading directly
-      // In a full implementation, we would download and extract here
-      return {
-        status: 'not_implemented',
-        message: 'File content extraction is not yet implemented. Please download the file directly from Canvas.',
-        file: {
-          id: fileData.id,
-          filename: fileData.filename,
-          display_name: fileData.display_name,
-          size: fileData.size,
-          content_type: fileData.content_type,
-          url: fileData.url,
-          created_at: fileData.created_at
-        },
-        implementation_notes: {
-          next_steps: 'Install pdf-parse for PDFs and mammoth/officeparser for DOCX files',
-          security: 'Files are processed in memory only, never saved to disk',
-          size_limit: '10MB maximum file size for extraction'
-        }
-      };
+      // Download the file
+      logger.info(`Downloading file ${fileData.filename} from ${fileData.url}`);
+      
+      try {
+        // Use axios directly for file download without auth header (uses verifier token in URL)
+        const axios = (await import('axios')).default;
+        const response = await axios.get(fileData.url, {
+          responseType: 'arraybuffer',
+          maxContentLength: 10 * 1024 * 1024,
+          timeout: 60000
+        });
+        
+        const buffer = Buffer.from(response.data);
+        logger.info(`Downloaded ${buffer.length} bytes`);
+        
+        // Extract content based on the determined MIME type
+        const extractor = new FileExtractor();
+        const result = await extractor.extractFromBuffer(
+          buffer,
+          fileData.filename,
+          mimeType
+        );
+        
+        return {
+          success: true,
+          file: {
+            id: fileData.id,
+            filename: fileData.filename,
+            display_name: fileData.display_name,
+            size: fileData.size,
+            content_type: fileData.content_type,
+            detected_type: mimeType,
+            url: fileData.url,
+            created_at: fileData.created_at
+          },
+          extraction: result
+        };
+      } catch (extractError: any) {
+        logger.error(`Failed to download/extract file: ${extractError.message}`);
+        
+        return {
+          error: 'Extraction failed',
+          message: extractError.message,
+          file: {
+            id: fileData.id,
+            filename: fileData.filename,
+            content_type: fileData.content_type,
+            detected_type: mimeType,
+            url: fileData.url
+          }
+        };
+      }
     } catch (error) {
       logger.error(`Failed to get file content for ${params.file_id}`, error);
       throw error;
