@@ -1,6 +1,6 @@
 {
   "name": "canvas-mcp-tool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "canvas-mcp-tool - A MCP server for students",
   "main": "dist/index.js",
   "type": "module",
