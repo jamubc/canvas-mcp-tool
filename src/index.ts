@@ -244,7 +244,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           type: "object",
           properties: {
             user_id: {
-              type: ["number", "string"],
+              oneOf: [
+                { type: "number" },
+                { type: "string" }
+              ],
               description: "User ID or 'self' for current user",
             },
           },

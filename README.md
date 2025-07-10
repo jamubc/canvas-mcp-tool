@@ -67,6 +67,27 @@ claude mcp add canvas -- npx -y canvas-mcp-tool
 </code></pre>
 </div>
 
+  <h3>Gemini CLI</h3>
+  <p>Add to your <code>~/.gemini/settings.json</code>:</p>
+  <pre><code class="language-json">{
+  "mcpServers": {
+    "canvas": {
+      "command": "npx",
+      "args": ["-y", "canvas-mcp-tool"],
+      "env": {
+        "CANVAS_API_URL": "https://your-schools-canvas-url.com",
+        "CANVAS_API_TOKEN": "your_token_here",
+        "CANVAS_API_VERSION": "v1",
+        "CANVAS_API_TIMEOUT": "30000",
+        "CANVAS_MAX_RETRIES": "3"
+      }
+    }
+  }
+}
+</code></pre>
+  <p>Note: Gemini CLI requires all environment variables to be explicitly defined in the configuration.</p>
+</div>
+
 ## Configuration
 After installation, you'll need to configure your Canvas URL and API token:
 

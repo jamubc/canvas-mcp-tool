@@ -25,7 +25,8 @@ export class Logger {
 
   private formatMessage(level: LogLevel, message: string, data?: any): string {
     const timestamp = new Date().toISOString();
-    const prefix = `[${timestamp}] [${level.toUpperCase()}] [${this.name}]`;
+    const levelStr = typeof level === 'string' ? level : 'info';
+    const prefix = `[${timestamp}] [${levelStr.toUpperCase()}] [${this.name}]`;
     
     if (data) {
       return `${prefix} ${message} ${JSON.stringify(data)}`;

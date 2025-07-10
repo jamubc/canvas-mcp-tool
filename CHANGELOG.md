@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/) and this 
 ### Added
 - Enhanced support for a wide range of file formats (DOCX, TXT, PDF, etc.) via `get_file_content`
 - Optimized caching mechanism for faster response times and improved data and tool calls
+- Google Gemini CLI compatibility with setup instructions
+- Fixed JSON schema compatibility issue for multi-type parameters
 
 ## [1.0.0] - 2025-07-09
 ### Added
