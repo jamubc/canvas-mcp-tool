@@ -13,17 +13,27 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
-    "mcp",
     "canvas",
-    "learning platform",
-    "course content"
+    "canvas-mcp-tool",
+    "canvas-lms",
+    "mcp",
+    "model-context-protocol",
+    "cli",
+    "api",
+    "education",
+    "lms",
+    "tool"
   ],
   "author": "jamubc",
   "license": "Apache-2.0 WITH Commons-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jamubc/canvas-mcp-tool"
+    "url": "git+https://github.com/jamubc/canvas-mcp-tool.git"
   },
+  "bugs": {
+    "url": "https://github.com/jamubc/canvas-mcp-tool/issues"
+  },
+  "homepage": "https://github.com/jamubc/canvas-mcp-tool#readme",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.6.0",
     "axios": "^1.10.0",
