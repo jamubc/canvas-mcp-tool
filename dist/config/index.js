@@ -3,7 +3,7 @@ import { z } from 'zod';
 loadEnv();
 const ConfigSchema = z.object({
     canvas: z.object({
-        apiUrl: z.string().url().describe('Canvas API base URL (e.g., https://canvas.instructure.com)'),
+        apiUrl: z.string().url().describe('Canvas API base URL (e.g., your-schools-canvas-url.com)'),
         apiToken: z.string().min(1).describe('Canvas API access token'),
         apiVersion: z.string().default('v1').describe('Canvas API version'),
         timeout: z.number().min(1000).default(30000).describe('API request timeout in milliseconds'),

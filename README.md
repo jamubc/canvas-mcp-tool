@@ -41,7 +41,7 @@
       "command": "npx",
       "args": ["-y", "canvas-mcp-tool"],
       "env": {
-        "CANVAS_API_URL": "https://your-schools-canvas-base-url.com",
+        "CANVAS_API_URL": "https://your-schools-canvas-url.com",
         "CANVAS_API_TOKEN": "your_token_here",
         "CANVAS_API_VERSION": "v1",
         "CANVAS_API_TIMEOUT": "30000",
@@ -58,7 +58,7 @@ claude mcp add canvas -- npx -y canvas-mcp-tool
 </code></pre>
 
   <pre><code class="language-bash"># Or inline specify all required and optional variables:
-CANVAS_API_URL="https://your-school.instructure.com" \
+CANVAS_API_URL="https://your-schools-canvas-url.com" \
 CANVAS_API_TOKEN="your_canvas_api_token_here" \
 CANVAS_API_VERSION="v1" \
 CANVAS_API_TIMEOUT=30000 \
@@ -85,7 +85,7 @@ You can add these to your shell profile (`~/.zshrc`, `~/.bashrc`, etc.) so they'
 
 ```bash
 # ~/.zshrc or ~/.bashrc
-export CANVAS_API_URL="https://your-school.instructure.com"
+export CANVAS_API_URL="https://your-schools-canvas-url.com"
 export CANVAS_API_TOKEN="your_canvas_api_token_here"
 export CANVAS_API_VERSION="v1"
 export CANVAS_API_TIMEOUT=30000
@@ -108,7 +108,7 @@ export CANVAS_MAX_RETRIES=3
 
 4. Edit `.env` and add your Canvas API token:
    ```
-   CANVAS_API_URL=https://canvas.instructure.com
+   CANVAS_API_URL=https://your-schools-canvas-url.com
    CANVAS_API_TOKEN=your_canvas_api_token_here
    ```
    Add optional cache and logging settings (defaults shown):
