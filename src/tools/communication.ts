@@ -9,7 +9,7 @@ import * as v from 'valibot';
 import {
   ListConversationsSchema,
   GetConversationSchema,
-  CreateConversationSchema,
+  //CreateConversationSchema,
   ListNotificationsSchema
 } from './schemas.js';
 
@@ -50,21 +50,21 @@ export class CommunicationTool extends BaseToolImplementation {
    * Create/send a new conversation message
    * Before: 40 lines → After: 10 lines
    */
-  async createConversation(params: v.InferInput<typeof CreateConversationSchema>) {
-    const validated = v.parse(CreateConversationSchema, params);
+  // async createConversation(params: v.InferInput<typeof CreateConversationSchema>) {
+  //   const validated = v.parse(CreateConversationSchema, params);
     
-    // No caching for create operations
-    return this.withErrorHandling(
-      'create conversation',
-      () => this.client.post('/conversations', {
-        recipients: validated.recipients,
-        subject: validated.subject,
-        body: validated.body,
-        group_conversation: validated.group_conversation,
-        attachment_ids: validated.attachment_ids
-      })
-    );
-  }
+  //   // No caching for create operations
+  //   return this.withErrorHandling(
+  //     'create conversation',
+  //     () => this.client.post('/conversations', {
+  //       recipients: validated.recipients,
+  //       subject: validated.subject,
+  //       body: validated.body,
+  //       group_conversation: validated.group_conversation,
+  //       attachment_ids: validated.attachment_ids
+  //     })
+  //   );
+  // }
 
   // ===== Notifications Features =====
   

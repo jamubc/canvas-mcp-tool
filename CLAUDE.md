@@ -10,6 +10,8 @@ YOU MUST FOLLOW THE CODING RULES:
 - **KISS**: Use utility functions over classes where possible.  
 - **YAGNI**: Avoid speculative abstractions (only implement what’s explicitly needed).  
 
-Use Valibot not ZOD.
+Use Valibot not ZOD. 
+
+For schemas use: Standard Schema (https://standardschema.dev/). 
 
 

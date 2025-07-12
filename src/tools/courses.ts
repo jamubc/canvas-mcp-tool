@@ -20,11 +20,35 @@ export class CoursesTool extends BaseToolImplementation {
   async listCourses(params: v.InferInput<typeof ListCoursesSchema> = {}) {
     const validated = v.parse(ListCoursesSchema, params);
     
+    // Build parameters with smart defaults
+    const queryParams: any = {
+      'include[]': ['term', 'teachers', 'total_students', 'course_progress'],
+      per_page: 100
+    };
+    
+    // Handle simplified boolean flags
+    if (!validated.include_concluded) {
+      // Default to only active courses
+      queryParams['enrollment_state'] = validated.enrollment_state || 'active';
+    }
+    
+    if (!validated.include_all) {
+      // Default to courses where user is a student if no enrollment type specified
+      queryParams['enrollment_type'] = validated.enrollment_type || 'student';
+    } else if (validated.enrollment_type) {
+      queryParams['enrollment_type'] = validated.enrollment_type;
+    }
+    
+    // Add any additional includes
+    if (validated.include && validated.include.length > 0) {
+      queryParams['include[]'] = [...queryParams['include[]'], ...validated.include];
+    }
+    
     return this.executeWithCacheDuration(
       'list courses',
       `courses:${JSON.stringify(validated)}`,
       'MEDIUM',
-      () => this.client.get('/courses', { params: this.buildQueryParams(validated) })
+      () => this.client.get('/courses', { params: queryParams })
     );
   }
 

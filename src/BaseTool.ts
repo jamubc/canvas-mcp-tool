@@ -3,8 +3,7 @@ import { extractResponseData } from './utils/response-extractor.js';
 import { FormatterFacade } from './formatters/FormatterFacade.js';
 
 /**
- * Abstract base class that centralizes common patterns for Canvas MCP tools.
- * Eliminates code duplication across 30+ tool methods by providing:
+ * Abstract base class that centralizes common patterns for canvas-mcp-tool.
  * - Caching with configurable TTL
  * - Standardized error handling and logging
  * - Query parameter building utilities

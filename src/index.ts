@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 /**
- * Canvas MCP Tool - FastMCP Implementation
- * Achieves code reduction through BaseTool patterns
+ * canvas-mcp-tool
+* uses BaseTool patterns
  * 
- * Architecture: index.ts → Tool Classes (with BaseTool) → Canvas API → FormatterFacade
  */
 
 import 'dotenv/config';
@@ -37,7 +36,7 @@ import {
   ListStudentCoursesSchema,
   ListConversationsSchema,
   GetConversationSchema,
-  CreateConversationSchema,
+  //CreateConversationSchema,
   ListNotificationsSchema,
   ListPagesSchema,
   GetPageSchema,
@@ -95,7 +94,7 @@ const tool = (name: string, description: string, schema: v.BaseSchema<any, any, 
 };
 
 // ===== Courses Tools =====
-tool('listCourses', 'List all courses the user is enrolled in', ListCoursesSchema, courses.listCourses.bind(courses));
+tool('listCourses', 'Get active student courses', ListCoursesSchema, courses.listCourses.bind(courses));
 tool('getCourse', 'Get details for a specific course', GetCourseSchema, courses.getCourse.bind(courses));
 tool('getSyllabus', 'Get syllabus for a course', GetSyllabusSchema, courses.getSyllabus.bind(courses));
 
@@ -126,8 +125,8 @@ tool('listStudentCourses', 'List active student courses', ListStudentCoursesSche
 // ===== Communication Tools =====
 tool('listConversations', 'List user conversations', ListConversationsSchema, communication.listConversations.bind(communication));
 tool('getConversation', 'Get a single conversation', GetConversationSchema, communication.getConversation.bind(communication));
-tool('createConversation', 'Send a new message', CreateConversationSchema, communication.createConversation.bind(communication));
 tool('listNotifications', 'List user notifications', ListNotificationsSchema, communication.listNotifications.bind(communication));
+//tool('createConversation', 'Send a new message', CreateConversationSchema, communication.createConversation.bind(communication));
 
 // ===== Content Tools =====
 tool('listPages', 'List content pages in a course', ListPagesSchema, content.listPages.bind(content));
