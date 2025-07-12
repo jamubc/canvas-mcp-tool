@@ -27,6 +27,8 @@ import {
   ListFilesSchema,
   GetFileSchema,
   GetDashboardCardsSchema,
+  GetDashboardSchema,
+  ListFoldersSchema,
   ListCalendarEventsSchema,
   GetUserProfileSchema,
   GetCourseGradesSchema,
@@ -86,7 +88,7 @@ const tool = (name: string, description: string, schema: v.BaseSchema<any, any, 
   server.addTool({
     name,
     description,
-parameters: toJsonSchema(schema) as any,
+    parameters: toJsonSchema(schema) as any,
     execute: execute as any
   });
 };
@@ -105,12 +107,12 @@ tool('getSubmission', 'Get current user submission for an assignment', GetSubmis
 
 // ===== Files & Folders Tools =====
 tool('listFiles', 'List files in a course or folder', ListFilesSchema, filesDashboard.listFiles.bind(filesDashboard));
-tool('listFolders', 'List all folders in a course', v.object({ course_id: v.number() }), filesDashboard.listFolders.bind(filesDashboard));
+tool('listFolders', 'List all folders in a course', ListFoldersSchema, filesDashboard.listFolders.bind(filesDashboard));
 tool('getFile', 'Get file metadata', GetFileSchema, filesDashboard.getFile.bind(filesDashboard));
 
 // ===== Dashboard Tools =====
 tool('getDashboardCards', 'Get course cards from dashboard', GetDashboardCardsSchema, filesDashboard.getDashboardCards.bind(filesDashboard));
-tool('getDashboard', 'Get user dashboard info', v.object({}), filesDashboard.getDashboard.bind(filesDashboard));
+tool('getDashboard', 'Get user dashboard info', GetDashboardSchema, filesDashboard.getDashboard.bind(filesDashboard));
 tool('listCalendarEvents', 'List calendar events', ListCalendarEventsSchema, filesDashboard.listCalendarEvents.bind(filesDashboard));
 tool('getUpcomingAssignments', 'Get upcoming assignments and events', GetUpcomingAssignmentsSchema, filesDashboard.getUpcomingAssignments.bind(filesDashboard));
 

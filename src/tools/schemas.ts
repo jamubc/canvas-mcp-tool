@@ -88,6 +88,10 @@ export const GetFileSchema = v.object({ file_id: BaseCanvasIdSchema });
 
 // Dashboard schemas
 export const GetDashboardCardsSchema = v.object({});
+export const GetDashboardSchema = v.object({});
+
+// Folders schema
+export const ListFoldersSchema = BaseCourseSchema;
 
 // Calendar schemas
 export const ListCalendarEventsSchema = v.object({
