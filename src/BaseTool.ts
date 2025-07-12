@@ -1,5 +1,6 @@
 import { CACHE_DURATION } from './cache-constants/index.js';
 import { extractResponseData } from './utils/response-extractor.js';
+import { FormatterFacade } from './formatters/FormatterFacade.js';
 
 /**
  * Abstract base class that centralizes common patterns for Canvas MCP tools.
@@ -91,27 +92,31 @@ export abstract class BaseTool {
   /**
    * Combine all patterns for maximum code reduction.
    * Reduces tool methods from 30-40 lines to 5-10 lines.
+   * Returns formatted string response for MCP compatibility.
    */
   protected async executeWithPatterns<T>(
     action: string,
     cacheKey: string,
     cacheTtl: number,
     apiCall: () => Promise<T>
-  ): Promise<T> {
-    return this.withErrorHandling(action, () =>
+  ): Promise<string> {
+    const result = await this.withErrorHandling(action, () =>
       this.withCache(cacheKey, cacheTtl, apiCall)
     );
+    // Format the response to string for MCP
+    return FormatterFacade.formatResponse(result);
   }
 
   /**
    * Convenience method using semantic cache durations
+   * Returns formatted string response for MCP compatibility.
    */
   protected async executeWithCacheDuration<T>(
     action: string,
     cacheKey: string,
     duration: keyof typeof CACHE_DURATION,
     apiCall: () => Promise<T>
-  ): Promise<T> {
+  ): Promise<string> {
     return this.executeWithPatterns(action, cacheKey, CACHE_DURATION[duration], apiCall);
   }
 
