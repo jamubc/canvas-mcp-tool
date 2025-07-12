@@ -6,6 +6,7 @@
  * Architecture: index.ts → Tool Classes (with BaseTool) → Canvas API → FormatterFacade
  */
 
+import 'dotenv/config';
 import { FastMCP } from 'fastmcp';
 import { CanvasClient } from './canvas-client.js';
 import * as v from 'valibot';
@@ -53,7 +54,6 @@ import {
   ListTokenScopesSchema,
   GetUpcomingAssignmentsSchema
 } from './tools/index.js';
-import { toJsonSchema } from '@valibot/to-json-schema';
 
 // Load environment variables
 const CANVAS_DOMAIN = process.env.CANVAS_DOMAIN;
@@ -76,19 +76,20 @@ const communication = new CommunicationTool(client);
 const content = new ContentTool(client);
 const assessment = new AssessmentTool(client);
 
-// Create FastMCP server
-const server = new FastMCP({
-  name: 'canvas-mcp',
-  version: '2.0.0'
-});
+// Define all tools first
+const tools: Array<{
+  name: string;
+  description: string;
+  parameters: v.BaseSchema<any, any, any>;
+  execute: (args: any) => Promise<any>;
+}> = [];
 
-// Helper function to register tools with minimal boilerplate (KISS principle)
+// Helper function to add tools to the array
 const tool = (name: string, description: string, schema: v.BaseSchema<any, any, any>, execute: Function) => {
-  // Convert Valibot schema to JSON Schema
-  server.addTool({
+  tools.push({
     name,
     description,
-    parameters: toJsonSchema(schema) as any,
+    parameters: schema,
     execute: execute as any
   });
 };
@@ -148,6 +149,15 @@ tool('getRubric', 'Get a specific rubric', GetRubricSchema, assessment.getRubric
 tool('listTokenScopes', 'List available API scopes', ListTokenScopesSchema, async () => {
   return client.get('/accounts/self/scopes');
 });
+
+// Create FastMCP server with all tools
+const server = new FastMCP({
+  name: 'canvas-mcp',
+  version: '2.0.0'
+});
+
+// Add all tools to the server
+tools.forEach(t => server.addTool(t));
 
 // Start the server
 server.start({ transportType: 'stdio' });

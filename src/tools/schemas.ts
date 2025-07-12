@@ -47,42 +47,47 @@ export const ListCoursesSchema = v.object({
   include: CourseIncludeSchema
 });
 
-export const GetCourseSchema = v.intersect([
-  BaseCourseSchema,
-  v.object({ include: CourseIncludeSchema })
-]);
+export const GetCourseSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  include: CourseIncludeSchema
+});
 
-export const GetSyllabusSchema = BaseCourseSchema;
+export const GetSyllabusSchema = v.object({
+  course_id: BaseCanvasIdSchema
+});
 
 // Assignments schemas
-export const ListAssignmentsSchema = v.intersect([
-  BaseCourseSchema,
-  v.object({
-    include: AssignmentIncludeSchema,
-    search_term: v.optional(v.string()),
-    bucket: v.optional(v.picklist(ASSIGNMENT_BUCKETS)),
-    order_by: v.optional(v.picklist(ASSIGNMENT_ORDER))
-  })
-]);
+export const ListAssignmentsSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  include: AssignmentIncludeSchema,
+  search_term: v.optional(v.string()),
+  bucket: v.optional(v.picklist(ASSIGNMENT_BUCKETS)),
+  order_by: v.optional(v.picklist(ASSIGNMENT_ORDER))
+});
 
-export const GetAssignmentSchema = v.intersect([
-  BaseAssignmentSchema,
-  v.object({ include: AssignmentIncludeSchema })
-]);
+export const GetAssignmentSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  assignment_id: BaseCanvasIdSchema,
+  include: AssignmentIncludeSchema
+});
 
 // Submissions schemas
-export const GetSubmissionsSchema = BaseAssignmentSchema;
+export const GetSubmissionsSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  assignment_id: BaseCanvasIdSchema
+});
 
-export const GetSubmissionSchema = v.intersect([
-  BaseAssignmentSchema,
-  v.object({ user_id: UserIdSchema })
-]);
+export const GetSubmissionSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  assignment_id: BaseCanvasIdSchema,
+  user_id: UserIdSchema
+});
 
 // Files schemas
-export const ListFilesSchema = v.intersect([
-  BaseCourseSchema,
-  v.object({ folder_id: v.optional(BaseCanvasIdSchema) })
-]);
+export const ListFilesSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  folder_id: v.optional(BaseCanvasIdSchema)
+});
 
 export const GetFileSchema = v.object({ file_id: BaseCanvasIdSchema });
 
@@ -91,7 +96,9 @@ export const GetDashboardCardsSchema = v.object({});
 export const GetDashboardSchema = v.object({});
 
 // Folders schema
-export const ListFoldersSchema = BaseCourseSchema;
+export const ListFoldersSchema = v.object({
+  course_id: BaseCanvasIdSchema
+});
 
 // Calendar schemas
 export const ListCalendarEventsSchema = v.object({
@@ -107,32 +114,38 @@ export const GetUserProfileSchema = v.object({
 });
 
 // Grades schemas
-export const GetCourseGradesSchema = BaseCourseSchema;
+export const GetCourseGradesSchema = v.object({
+  course_id: BaseCanvasIdSchema
+});
 export const GetUserGradesSchema = v.object({});
 
 // Modules schemas
-export const ListModulesSchema = v.intersect([
-  BaseCourseSchema,
-  v.object({ include: ModuleIncludeSchema })
-]);
+export const ListModulesSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  include: ModuleIncludeSchema
+});
 
-export const GetModuleSchema = v.intersect([
-  BaseModuleSchema,
-  v.object({ include: ModuleIncludeSchema })
-]);
+export const GetModuleSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  module_id: BaseCanvasIdSchema,
+  include: ModuleIncludeSchema
+});
 
-export const GetModuleItemSchema = v.intersect([
-  BaseModuleSchema,
-  v.object({ item_id: BaseCanvasIdSchema })
-]);
+export const GetModuleItemSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  module_id: BaseCanvasIdSchema,
+  item_id: BaseCanvasIdSchema
+});
 
 // Content pages schemas
-export const ListPagesSchema = BaseCourseSchema;
+export const ListPagesSchema = v.object({
+  course_id: BaseCanvasIdSchema
+});
 
-export const GetPageSchema = v.intersect([
-  BaseCourseSchema,
-  v.object({ page_url: v.string() })
-]);
+export const GetPageSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  page_url: v.string()
+});
 
 // Conversations schemas
 export const ListConversationsSchema = v.object({
@@ -158,45 +171,57 @@ export const ListNotificationsSchema = v.object({
 });
 
 // Discussions schemas
-export const ListDiscussionTopicsSchema = BaseCourseSchema;
+export const ListDiscussionTopicsSchema = v.object({
+  course_id: BaseCanvasIdSchema
+});
 
-export const GetDiscussionTopicSchema = v.intersect([
-  BaseCourseSchema,
-  v.object({ topic_id: BaseCanvasIdSchema })
-]);
+export const GetDiscussionTopicSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  topic_id: BaseCanvasIdSchema
+});
 
 // Announcements schema
-export const ListAnnouncementsSchema = BaseCourseSchema;
+export const ListAnnouncementsSchema = v.object({
+  course_id: BaseCanvasIdSchema
+});
 
 // Quizzes schemas
-export const ListQuizzesSchema = BaseCourseSchema;
+export const ListQuizzesSchema = v.object({
+  course_id: BaseCanvasIdSchema
+});
 
-export const GetQuizSchema = v.intersect([
-  BaseCourseSchema,
-  v.object({ quiz_id: BaseCanvasIdSchema })
-]);
+export const GetQuizSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  quiz_id: BaseCanvasIdSchema
+});
 
 // Rubrics schemas
-export const ListRubricsSchema = BaseCourseSchema;
+export const ListRubricsSchema = v.object({
+  course_id: BaseCanvasIdSchema
+});
 
-export const GetRubricSchema = v.intersect([
-  BaseCourseSchema,
-  v.object({ rubric_id: BaseCanvasIdSchema })
-]);
+export const GetRubricSchema = v.object({
+  course_id: BaseCanvasIdSchema,
+  rubric_id: BaseCanvasIdSchema
+});
 
 // Account management schemas
-export const GetAccountSchema = BaseAccountSchema;
-export const ListAccountCoursesSchema = BaseAccountSchema;
+export const GetAccountSchema = v.object({
+  account_id: BaseCanvasIdSchema
+});
+export const ListAccountCoursesSchema = v.object({
+  account_id: BaseCanvasIdSchema
+});
 
 // Account reports schemas
-export const GetAccountReportsSchema = BaseAccountSchema;
-export const GetAccountReportSchema = v.intersect([
-  BaseAccountSchema,
-  v.object({
-    report_type: v.string(),
-    report_id: BaseCanvasIdSchema
-  })
-]);
+export const GetAccountReportsSchema = v.object({
+  account_id: BaseCanvasIdSchema
+});
+export const GetAccountReportSchema = v.object({
+  account_id: BaseCanvasIdSchema,
+  report_type: v.string(),
+  report_id: BaseCanvasIdSchema
+});
 
 // API Scopes schema
 export const ListTokenScopesSchema = v.object({});
