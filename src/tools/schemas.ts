@@ -3,6 +3,11 @@
  * Optimized using Valibot composition patterns for maximum code reuse and performance
  */
 
+
+//  This is the 'input' side of the MCP server
+
+
+
 import * as v from 'valibot';
 
 // Base Canvas entity schemas (DRY principle)
@@ -14,7 +19,6 @@ export const UserIdSchema = v.union([BaseCanvasIdSchema, v.literal('self')]);
 
 // Include option constants for reusability
 const COURSE_INCLUDES = ['syllabus_body', 'term', 'course_progress', 'total_students', 'teachers'] as const;
-
 const ASSIGNMENT_INCLUDES = ['submission', 'assignment_visibility', 'all_dates', 'overrides', 'observed_users'] as const;
 const MODULE_INCLUDES = ['items', 'content_details'] as const;
 const ENROLLMENT_TYPES = ['teacher', 'student', 'ta', 'observer', 'designer'] as const;
@@ -43,11 +47,7 @@ const BaseAccountSchema = v.object({ account_id: BaseCanvasIdSchema });
 
 // Courses schemas
 export const ListCoursesSchema = v.object({
-  // include_concluded: v.optional(v.boolean()),
-  // include_all: v.optional(v.boolean()),
-  // enrollment_type: v.optional(v.picklist(ENROLLMENT_TYPES)),
-  // enrollment_state: v.optional(v.picklist(ENROLLMENT_STATES)),
-  //include: CourseIncludeSchema
+  include_concluded: v.optional(v.optional(v.boolean(), true))
 });
 
 export const GetCourseSchema = v.object({

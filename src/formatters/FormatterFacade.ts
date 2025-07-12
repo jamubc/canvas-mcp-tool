@@ -44,6 +44,12 @@ const conciseFormatter = (data: any) => {
 
 const verboseFormatter = (data: any) => {
   return JSON.stringify(data, null, 2);
+  // return JSON.parse(JSON.stringify(data, null, 2), (key, value) => {
+  //   if (key === 'id') {
+  //     return `ID: ${value}`;
+  //   }
+  //   return value;
+  // });
 };
 
 export const FormatterFacade = {

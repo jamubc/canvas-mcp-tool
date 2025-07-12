@@ -22,33 +22,33 @@ export class CoursesTool extends BaseToolImplementation {
     
     // Build parameters with smart defaults
     const queryParams: any = {
-      'include[]': ['term', 'teachers', 'total_students', 'course_progress'],
+      //'include[]': ['term', 'teachers', 'total_students', 'course_progress'],
+      //'include[]': ['Name'],
       per_page: 100
     };
     
     // Handle simplified boolean flags
     if (!validated.include_concluded) {
       // Default to only active courses
-      queryParams['enrollment_state'] = validated.enrollment_state || 'active';
-    }
-    
-    if (!validated.include_all) {
-      // Default to courses where user is a student if no enrollment type specified
-      queryParams['enrollment_type'] = validated.enrollment_type || 'student';
-    } else if (validated.enrollment_type) {
-      queryParams['enrollment_type'] = validated.enrollment_type;
-    }
-    
-    // Add any additional includes
-    if (validated.include && validated.include.length > 0) {
-      queryParams['include[]'] = [...queryParams['include[]'], ...validated.include];
+      queryParams['enrollment_state'] = 'active';
     }
     
     return this.executeWithCacheDuration(
       'list courses',
       `courses:${JSON.stringify(validated)}`,
       'MEDIUM',
-      () => this.client.get('/courses', { params: queryParams })
+      async () => {
+        const response = await this.client.get('/courses', { params: queryParams });
+        // Filter out junk entries with only id + access_restricted_by_date
+        response.data = response.data.filter((item: any) => {
+          const keys = Object.keys(item);
+          const isJunk = keys.length === 2 && 
+                         keys.includes('id') && 
+                         keys.includes('access_restricted_by_date');
+          return !isJunk;
+        });
+        return response;
+      }
     );
   }
 
